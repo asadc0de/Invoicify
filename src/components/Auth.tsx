@@ -30,8 +30,8 @@ export const Auth: React.FC = () => {
   if (!user) {
     return (
   <div className="min-h-screen bg-dark flex items-center justify-center">
-        <div className="bg-gray-900 p-8 rounded-xl shadow-2xl text-center max-w-md w-full mx-4">
-          <User className="w-16 h-16 mx-auto mb-6 text-blue-400" />
+        <div className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full mx-4">
+          <User className="w-16 h-16 mx-auto mb-6 text-[#606060]" />
           <h1 className="text-3xl font-bold text-white mb-4">
             Invoice Generator
           </h1>
@@ -40,7 +40,7 @@ export const Auth: React.FC = () => {
           </p>
           <button
             onClick={signInWithGoogle}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-3 text-lg"
+            className="w-full bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center gap-3 text-lg"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -62,11 +62,9 @@ export const Auth: React.FC = () => {
   return (
     <div className="flex items-center justify-between gap-4 mb-8 md:px-10 px-4 py-2 border-b border-[#333]">
       {/* Logo */}
-      <div className="w-32 h-16">
         <Link to="/">
-          <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+         <h1 className="text-extrabold text-2xl text-white">Invoicify</h1>
         </Link>
-      </div>
 
       {/* User Profile Dropdown */}
       <div className="ml-auto relative z-10 group">
