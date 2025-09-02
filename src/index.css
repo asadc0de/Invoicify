@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@font-face {
+	font-family: 'matter';
+	src: url('./fonts/matter-light.ttf') type='ttf';
+}
+
+body {
+	font-family: 'matter', Arial, Helvetica, sans-serif;
+}
