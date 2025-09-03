@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from 'firebase/firestore';
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCD7Q1jsNe7Ww04-B7RYfAcyr5-onADgAc",
   authDomain: "invoicify-e4c86.firebaseapp.com",
