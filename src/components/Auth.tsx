@@ -101,7 +101,7 @@ export const Auth: React.FC = () => {
                   {/* CTA Section */}
                   <button
                     onClick={signInWithGoogle}
-                    className="text-center bg-[#0A0A0A] mx-auto hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center gap-3 text-lg"
+                   className="bg-gradient-to-r from-black via-[#494949] to-[#868686] hover:from-[#868686] hover:via-[#494949] hover:to-black transition-all duration-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 text-lg mx-auto"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

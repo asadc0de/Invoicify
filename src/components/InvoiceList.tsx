@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Plus, FileText, Calendar, DollarSign, Copy } from "lucide-react";
+import { Plus, FileText, Calendar, DollarSign, Copy, User } from "lucide-react";
 import { useUserInvoices } from "../hooks/useInvoice";
 import { Invoice } from "../types";
 import { SkeletonBox, SkeletonText, SkeletonSection } from "./Skeleton";
@@ -118,7 +118,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
+                <User className="w-4 h-4" />
                 <span>Client: {invoice.clientName || "Not specified"}</span>
               </div>
             </div>

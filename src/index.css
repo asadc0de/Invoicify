@@ -5,9 +5,19 @@
 
 @font-face {
 	font-family: 'matter';
-	src: url('./fonts/matter-light.ttf') type='ttf';
+	src: url('./fonts/matter-light.ttf') format='truetype';
 }
 
 body {
 	font-family: 'matter', Arial, Helvetica, sans-serif;
+}
+
+/* GradientButton.css */
+button {
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  transition: background-position 1s ease-in-out;
+}
+button:hover {
+  background-position: 100% 50%;
 }

@@ -3,6 +3,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ['matter', 'sans-serif'],
+      },
       colors: {
         // bg-dark: Used for main background (body, containers)
         dark: {

@@ -7,14 +7,12 @@ import {
   Trash2,
   ArrowLeft,
   Camera,
-  RotateCcw,
   Minus,
   Calendar,
 } from "lucide-react";
 import { useInvoice } from "../hooks/useInvoice";
 import { useAuth } from "../hooks/useAuth";
 import { Invoice, Feature, RevisionSnapshot } from "../types";
-import { exportToPDF } from "../utils/pdfExport";
 import { exportSimplePDF } from "../utils/simplePdfExport";
 import { SkeletonSection } from "./Skeleton";
 
@@ -256,11 +254,12 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     setFormData((prev) => ({
                       ...prev,
                       projectTitle: e.target.value,
+                      
                     }))
                   }
                   disabled={!canEdit}
             placeholder="Enter project title"
-            className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50"
+            className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 capitalize"
                 />
               </div>
               <div>
@@ -311,7 +310,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     }
                     disabled={!canEdit}
                     placeholder="Your name"
-              className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50"
+              className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 capitalize"
                   />
                 </div>
                 <div>
@@ -374,7 +373,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     }
                     disabled={!canEdit}
                     placeholder="Client name"
-              className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50"
+              className="outline-none w-full bg-gray-800 text-white border border-[#222] rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 capitalize"
                   />
                 </div>
                 <div>
@@ -418,66 +417,68 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
           </div>
 
           {/* Features Section */}
-          <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">Features</h2>
-              {canEdit && (
-                <button
-                  onClick={addFeature}
-                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
-                  data-hide-in-pdf
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Feature
-                </button>
-              )}
-            </div>
+<div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border">
+  <div className="flex justify-between items-center mb-6">
+    <h2 className="text-2xl font-bold text-white">Features</h2>
+    {canEdit && (
+      <button
+        onClick={addFeature}
+        className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
+        data-hide-in-pdf
+      >
+        <Plus className="w-4 h-4" />
+        Add Feature
+      </button>
+    )}
+  </div>
 
-            <div className="space-y-4">
-              {(formData.features || []).map((feature, index) => (
-                <div
-                  key={feature.id}
-                  className="bg-gray-800 rounded-lg p-4 border border-[#222]"
-                >
-                  <div className="flex gap-4 items-start">
-                    <div className="flex-1">
-                      <label className="block text-lg font-semibold text-white mb-2">
-                        Feature {index + 1}
-                      </label>
-                      <textarea
-                        value={feature.description}
-                        onChange={(e) =>
-                          updateFeature(feature.id, {
-                            description: e.target.value,
-                          })
-                        }
-                        disabled={!canEdit}
-                        placeholder="Describe the feature or service"
-                        rows={3}
-                        className="outline-none w-full bg-[#222] text-white border border-gray-600 rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 resize-none"
-                      />
-                    </div>
-                    {/* Price input removed, only description remains */}
-                    {canEdit && (
-                      <button
-                        onClick={() => deleteFeature(feature.id)}
-                        className="mt-8 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200"
-                        data-hide-in-pdf
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {(formData.features || []).length === 0 && (
-                <p className="text-gray-500 text-center py-8 text-lg">
-                  No features added yet. Click "Add Feature" to get started.
-                </p>
-              )}
-            </div>
+  <div className="space-y-4">
+    {(formData.features || []).map((feature, index) => (
+      <div
+        key={feature.id}
+        className="bg-gray-800 rounded-lg p-4 border border-[#222]"
+      >
+        <div className="flex gap-4 items-start">
+          <div className="flex-1">
+            <label className="block text-lg font-semibold text-white mb-2">
+              Feature {index + 1}
+            </label>
+            <textarea
+              value={feature.description}
+              onChange={(e) =>
+                updateFeature(feature.id, {
+                  // Capitalize only the very first letter
+                  description:
+                    e.target.value.charAt(0).toUpperCase() +
+                    e.target.value.slice(1),
+                })
+              }
+              disabled={!canEdit}
+              placeholder="Describe the feature or service"
+              rows={3}
+              className="outline-none w-full bg-[#222] text-white border border-gray-600 rounded-2xl px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 resize-none"
+            />
           </div>
+          {canEdit && (
+            <button
+              onClick={() => deleteFeature(feature.id)}
+              className="mt-8 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200"
+              data-hide-in-pdf
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    ))}
+
+    {(formData.features || []).length === 0 && (
+      <p className="text-gray-500 text-center py-8 text-lg">
+        No features added yet. Click "Add Feature" to get started.
+      </p>
+    )}
+  </div>
+</div>
 
           {/* Revisions Section */}
           <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border">
@@ -512,14 +513,14 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 <button
                   onClick={useRevision}
                   disabled={getRemainingRevisions === 0}
-                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
+                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg md:w-fit w-full justify-center"
                 >
                   <Minus className="w-4 h-4" />
                   Used Revisions
                 </button>
                 <button
                   onClick={addRevisionSlot}
-                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
+                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg md:w-fit w-full justify-center"
                 >
                   <Plus className="w-4 h-4" />
                   Add
@@ -527,14 +528,14 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 <button
                   onClick={deleteRevisionSlot}
                   disabled={(formData.totalRevisions || 0) <= 1}
-                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
+                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg md:w-fit w-full justify-center"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </button>
                 <button
                   onClick={saveRevisionSnapshot}
-                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg"
+                  className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 text-lg md:w-fit w-full justify-center"
                 >
                   <Camera className="w-4 h-4" />
                   Take Snapshot
