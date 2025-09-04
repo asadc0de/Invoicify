@@ -1,5 +1,5 @@
 import React from "react";
-import { LogOut, User, Zap, Clock } from "lucide-react";
+import { LogOut, Zap, Clock } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { SkeletonBox, SkeletonText, SkeletonCircle } from "./Skeleton";
 import logo from "../assets/logo.png";
@@ -70,7 +70,7 @@ export const Auth: React.FC = () => {
                       Real-time Invoice Processing
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
+                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight">
                       <span
                         className="block bg-gradient-to-r from-black via-gray-400 to-white bg-clip-text text-transparent"
                         style={{
@@ -101,7 +101,7 @@ export const Auth: React.FC = () => {
                   {/* CTA Section */}
                   <button
                     onClick={signInWithGoogle}
-                   className="bg-gradient-to-r from-black via-[#494949] to-[#868686] hover:from-[#868686] hover:via-[#494949] hover:to-black transition-all duration-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 text-lg mx-auto"
+                   className="bg-gradient-to-r from-black via-[#494949] to-[#868686] hover:from-[#868686] hover:via-[#494949] hover:to-black transition-all duration-700 text-white py-3 px-6 rounded-xl flex items-center justify-center gap-3 text-lg mx-auto select-none"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -142,55 +142,6 @@ export const Auth: React.FC = () => {
               with ❤️
             </p>
           </footer>
-          <style jsx>{`
-            @keyframes float {
-              0%,
-              100% {
-                transform: translateY(0px) rotate(0deg);
-              }
-              33% {
-                transform: translateY(-10px) rotate(5deg);
-              }
-              66% {
-                transform: translateY(5px) rotate(-5deg);
-              }
-            }
-
-            @keyframes float-delay {
-              0%,
-              100% {
-                transform: translateY(0px) rotate(0deg);
-              }
-              33% {
-                transform: translateY(8px) rotate(-3deg);
-              }
-              66% {
-                transform: translateY(-5px) rotate(3deg);
-              }
-            }
-
-            @keyframes float-slow {
-              0%,
-              100% {
-                transform: translateY(0px) rotate(12deg);
-              }
-              50% {
-                transform: translateY(-8px) rotate(18deg);
-              }
-            }
-
-            .animate-float {
-              animation: float 6s ease-in-out infinite;
-            }
-
-            .animate-float-delay {
-              animation: float-delay 8s ease-in-out infinite;
-            }
-
-            .animate-float-slow {
-              animation: float-slow 10s ease-in-out infinite;
-            }
-          `}</style>
         </div>
       </div>
     );

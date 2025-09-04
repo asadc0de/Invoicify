@@ -31,163 +31,154 @@ const InvoiceTextView: React.FC = () => {
       : "bg-yellow-900 text-yellow-300 border-yellow-700";
 
   return (
-    <div className="min-h-screen bg-dark flex flex-col items-center justify-start py-8 sm:py-10 md:py-12 px-2 sm:px-4 md:px-8 font-[matter]">
-      <div className="w-full max-w-3xl">
-        <div className="mb-4 sm:mb-6 text-center">
-          <span className="inline-block bg-[#0A0A0A] text-white px-3 sm:px-4 py-2 rounded-full text-base font-semibold shadow border border-[#333]">
+    <div className="min-h-screen bg-dark p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-4 text-center">
+          <span className="inline-block bg-[#0A0A0A] text-white px-4 py-2 rounded-full text-base font-semibold shadow border border-[#333]">
             Viewing Mode
           </span>
         </div>
-
-        <div className="bg-gray-900 text-white opacity-80 rounded-xl shadow-xl w-full border border-[#333] p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 font-[matter]">
+        {/* Top Section */}
+        <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
           <div className="flex justify-between items-center">
-            <div className="mb-2 text-sm sm:text-base">
-              <span className="font-bold text-white ">Start Date:</span>{" "}
-              <span className="text-white opacity-80">
+            <div>
+              <span className="block text-lg font-semibold text-white mb-2">Invoice Date</span>
+              <div className="flex items-center gap-2 text-gray-300 text-lg">
                 {invoice.startDate.toLocaleDateString()}
-              </span>
-            </div>
-            {invoice.updatedAt && (
-              <div className="text-lg text-gray-400 ml-auto">
-                Last updated:{" "}
-                {new Date(invoice.updatedAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                })}
               </div>
+            </div>
+            <div>
+              {invoice.updatedAt && (
+                <div className="text-lg text-gray-400">
+                  Last updated: {" "}
+                  {new Date(invoice.updatedAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Project Details Section */}
+        <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
+          <h2 className="text-2xl font-bold text-white mb-6">Project Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <span className="block text-lg font-semibold text-white mb-2">Project Title</span>
+              <div className="text-white opacity-80 font-normal text-lg capitalize">
+                {invoice.projectTitle}
+              </div>
+            </div>
+            <div>
+              <span className="block text-lg font-semibold text-white mb-2">Website Pages</span>
+              <div className="text-white opacity-80 font-normal text-lg">
+                {invoice.websitePages}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Freelancer & Client Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border">
+            <h2 className="text-2xl font-bold text-white mb-6">Freelancer Info</h2>
+            <div className="space-y-4">
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Name</span>
+                <div className="text-white opacity-80 font-normal text-lg capitalize">{invoice.freelancerName}</div>
+              </div>
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Email</span>
+                <div className="text-white opacity-80 font-normal text-lg">{invoice.freelancerEmail}</div>
+              </div>
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Contact</span>
+                <div className="text-white opacity-80 font-normal text-lg">{invoice.freelancerContact}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border">
+            <h2 className="text-2xl font-bold text-white mb-6">Client Info</h2>
+            <div className="space-y-4">
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Name</span>
+                <div className="text-white opacity-80 font-normal text-lg capitalize">{invoice.clientName}</div>
+              </div>
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Email</span>
+                <div className="text-white opacity-80 font-normal text-lg">{invoice.clientEmail}</div>
+              </div>
+              <div>
+                <span className="block text-lg font-semibold text-white mb-2">Contact</span>
+                <div className="text-white opacity-80 font-normal text-lg">{invoice.clientContact}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
+          <h2 className="text-2xl font-bold text-white mb-6">Features</h2>
+          <div className="space-y-4">
+            {(invoice.features || []).map((feature, index) => (
+              <div key={feature.id} className="bg-[#111] rounded-lg p-4 border border-[#222]">
+                <span className="block text-lg font-semibold text-white mb-2">Feature {index + 1}</span>
+                <div className="text-white opacity-80 font-normal text-lg">{feature.description}</div>
+              </div>
+            ))}
+            {(invoice.features || []).length === 0 && (
+              <p className="text-gray-500 text-center py-8 text-lg">No features added yet.</p>
             )}
           </div>
-          {/* Project Title Big and Centered */}
-          <div className="mb-6 sm:mb-8 bg-[#131313] py-2 px-4 rounded-xl">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-              {/* Project Title */}
-              <div className="text-center sm:text-left">
-                <div className="text-white text-base sm:text-2xl font-semibold mb-1">
-                  Project Title
-                </div>
-                <div className="text-white opacity-80 font-normal text-lg sm:text-xl">
-                  {invoice.projectTitle}
-                </div>
-              </div>
+        </div>
 
-              {/* Website Pages */}
-              <div className="text-center sm:text-right">
-                <div className="text-white text-base sm:text-2xl font-semibold mb-1">
-                  Website Pages
-                </div>
-                <div className="text-white text-center opacity-80 font-normal text-lg sm:text-xl">
-                  {invoice.websitePages}
-                </div>
-              </div>
+        {/* Revisions Section */}
+        <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
+          <h2 className="text-2xl font-bold text-white mb-6">Revisions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="text-center">
+              <p className="text-gray-400 text-lg mb-2">Total Revisions</p>
+              <p className="text-3xl font-bold text-white">{invoice.totalRevisions || 0}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-gray-400 text-lg mb-2">Used Revisions</p>
+              <p className="text-3xl font-bold text-yellow-400">{invoice.usedRevisions || 0}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-gray-400 text-lg mb-2">Remaining</p>
+              <p className="text-3xl font-bold text-green-400">{Math.max(0, (invoice.totalRevisions || 0) - (invoice.usedRevisions || 0))}</p>
             </div>
           </div>
+        </div>
 
-          {/* Freelancer and Client Info Side by Side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between sm:gap-8 mb-6 sm:mb-8">
+        {/* Payment Section */}
+        <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
+          <h2 className="text-2xl font-bold text-white mb-6">Payment</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="font-bold text-base sm:text-xl text-white  mb-2 text-center md:text-left">
-                Freelancer Info
-              </div>
-              <div className="ml-2 sm:ml-4">
-                <div>
-                  <span className="font-semibold">Name:</span>{" "}
-                  {invoice.freelancerName}
-                </div>
-                <div>
-                  <span className="font-semibold">Email:</span>{" "}
-                  {invoice.freelancerEmail}
-                </div>
-                <div>
-                  <span className="font-semibold">Contact:</span>{" "}
-                  {invoice.freelancerContact}
-                </div>
-              </div>
+              <span className="block text-lg font-semibold text-white mb-2">Total Payment</span>
+              <div className="text-green-400 font-bold text-3xl">{currencySymbol}{invoice.totalPayment ?? ""}</div>
+              {(invoice.totalPayment || 0) > 0 && invoice.paymentStatus === "paid" && (
+                <div className="mt-2 text-lg text-green-400">Full Payment: {currencySymbol}{(invoice.totalPayment || 0).toLocaleString()}</div>
+              )}
             </div>
             <div>
-              <div className="font-bold text-base sm:text-xl text-white mb-2 text-center md:text-left">
-                Client Info
-              </div>
-              <div className="ml-2 sm:ml-4">
-                <div>
-                  <span className="font-semibold">Name:</span>{" "}
-                  {invoice.clientName}
-                </div>
-                <div>
-                  <span className="font-semibold">Email:</span>{" "}
-                  {invoice.clientEmail}
-                </div>
-                <div>
-                  <span className="font-semibold">Contact:</span>{" "}
-                  {invoice.clientContact}
-                </div>
-              </div>
+              <span className="block text-lg font-semibold text-white mb-2">Paid Payment</span>
+              <div className="text-white font-normal text-lg w-fit">{invoice.paidPayment !== undefined && invoice.paidPayment !== null ? currencySymbol + invoice.paidPayment : ""}</div>
+            </div>
+            <div>
+              <span className="block text-lg font-semibold text-white mb-2">Payment Status</span>
+              <div className={`p-1 text-sm rounded-lg w-fit ${statusColor}`}>{invoice.paymentStatus === "paid" ? "Paid" : "Pending"}</div>
             </div>
           </div>
-
-          <div>
-            <div className="font-bold text-base sm:text-xl text-white  mb-2">
-              Features
+          {invoice.paymentStatus === "paid" && (invoice.advancePayment || 0) > 0 && (
+            <div className="mt-6 bg-green-900 border border-green-700 rounded-lg p-4">
+              <p className="text-green-300 text-lg font-semibold">Advance shown: {currencySymbol}{(invoice.advancePayment || 0).toLocaleString()}</p>
             </div>
-            <ul className="ml-2 sm:ml-4 list-disc">
-              {invoice.features.map((f) => (
-                <li key={f.id} className="mb-1 bg-[#0F0F0F] px-2 py-1 rounded-lg">
-                  {f.description}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Revisions and Payment Side by Side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-            <div>
-              <div className="font-bold text-base sm:text-xl text-white  mb-2">
-                Revisions
-              </div>
-              <div className="ml-2 sm:ml-4">
-                <div>
-                  <span className="font-semibold">Total:</span>{" "}
-                  {invoice.totalRevisions}
-                </div>
-                <div>
-                  <span className="font-semibold">Used:</span>{" "}
-                  {invoice.usedRevisions}
-                </div>
-                <div>
-                  <span className="font-semibold">Remaining:</span>{" "}
-                  {Math.max(
-                    0,
-                    (invoice.totalRevisions || 0) - (invoice.usedRevisions || 0)
-                  )}
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="font-bold text-base sm:text-xl text-white  mb-2">
-                Payment
-              </div>
-              <div className="ml-2 sm:ml-4">
-                <div>
-                  <span className="font-semibold">Total Payment:</span>{" "}
-                  {currencySymbol}
-                  {invoice.totalPayment ?? ""}
-                </div>
-                <div>
-                  <span className="font-semibold">Paid Payment:</span>{" "}
-                  {invoice.paidPayment !== undefined &&
-                  invoice.paidPayment !== null
-                    ? currencySymbol + invoice.paidPayment
-                    : ""}
-                </div>
-                <div>
-                  <span className="font-thin">Status:</span>{" "}
-                  <span className={`p-1 text-sm rounded-lg ${statusColor}`}>
-                    {invoice.paymentStatus === "paid" ? "Paid" : "Pending"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

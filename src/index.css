@@ -5,7 +5,7 @@
 
 @font-face {
 	font-family: 'matter';
-	src: url('./fonts/matter-light.ttf') format='truetype';
+	src: url('/src/fonts/matter-light.ttf') format='truetype';
 }
 
 body {
