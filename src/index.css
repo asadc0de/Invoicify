@@ -9,7 +9,7 @@
 } */
 @font-face {
 	font-family: 'matter';
-	src: url('/src/fonts/matter-light.woff2') format='woff2';
+	src: url('/src/fonts/matter-light.woff2') format=('woff2');
 }
 
 body {
