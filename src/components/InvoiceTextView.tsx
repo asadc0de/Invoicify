@@ -44,26 +44,45 @@ const InvoiceTextView: React.FC = () => {
             <div>
               <span className="block text-lg font-semibold text-white mb-2">Invoice Date</span>
               <div className="flex items-center gap-2 text-gray-300 text-lg">
-                {invoice.startDate && (typeof invoice.startDate.toDate === 'function'
-                  ? invoice.startDate.toDate()?.toLocaleDateString()
-                  : (invoice.startDate instanceof Date
-                      ? invoice.startDate.toLocaleDateString()
-                      : (typeof invoice.startDate === 'string' || typeof invoice.startDate === 'number')
-                        ? new Date(invoice.startDate).toLocaleDateString()
-                        : null)) || 'N/A'}
+                {
+                  (() => {
+                    let date: Date | undefined = undefined;
+                    if (invoice.startDate) {
+                      if (typeof invoice.startDate.toDate === 'function') {
+                        date = invoice.startDate.toDate();
+                      } else if (invoice.startDate instanceof Date) {
+                        date = invoice.startDate;
+                      } else if (typeof invoice.startDate === 'string' || typeof invoice.startDate === 'number') {
+                        const d = new Date(invoice.startDate);
+                        if (!isNaN(d.getTime())) date = d;
+                      }
+                    }
+                    return date ? date.toLocaleDateString() : 'N/A';
+                  })()
+                }
               </div>
             </div>
             <div>
-              {invoice.updatedAt && (
-                <div className="text-lg text-gray-400">
-                  Last updated: {" "}
-                  {new Date(invoice.updatedAt).toLocaleTimeString([], {
+              <div className="text-lg text-gray-400">
+                Last updated: {" "}
+                {(() => {
+                  if (!invoice.updatedAt) return 'N/A';
+                  let date: Date | undefined = undefined;
+                  if (typeof invoice.updatedAt.toDate === 'function') {
+                    date = invoice.updatedAt.toDate();
+                  } else if (invoice.updatedAt instanceof Date) {
+                    date = invoice.updatedAt;
+                  } else if (typeof invoice.updatedAt === 'string' || typeof invoice.updatedAt === 'number') {
+                    const d = new Date(invoice.updatedAt);
+                    if (!isNaN(d.getTime())) date = d;
+                  }
+                  return date ? date.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                     hour12: true,
-                  })}
-                </div>
-              )}
+                  }) : 'N/A';
+                })()}
+              </div>
             </div>
           </div>
         </div>

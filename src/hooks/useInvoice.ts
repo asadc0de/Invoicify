@@ -44,6 +44,7 @@ export function useInvoice(invoiceId?: string) {
       createdBy: userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      startDate: serverTimestamp(),
       projectTitle: "",
       websitePages: 0,
       features: [],

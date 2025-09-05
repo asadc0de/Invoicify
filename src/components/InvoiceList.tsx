@@ -30,7 +30,15 @@ const ConfirmModal: React.FC<{
   );
 };
 import { SkeletonSection } from "./Skeleton";
-import { Plus, FileText, Calendar, DollarSign, Copy, User } from "lucide-react";
+import {
+  Plus,
+  FileText,
+  Calendar,
+  DollarSign,
+  Copy,
+  User,
+  LogInIcon,
+} from "lucide-react";
 import { db } from "../firebase";
 import {
   collection,
@@ -61,6 +69,28 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const [creatingInvoice, setCreatingInvoice] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [showDeleted, setShowDeleted] = useState(false);
+
+  const [showSignedIn, setShowSignedIn] = useState(false);
+  const prevUserId = React.useRef<string | undefined>();
+  const firstLoad = React.useRef(true);
+
+  useEffect(() => {
+    if (firstLoad.current) {
+      // skip showing toast on first page load (refresh)
+      firstLoad.current = false;
+      prevUserId.current = userId;
+      return;
+    }
+
+    if (userId && userId !== prevUserId.current) {
+      // real sign in event
+      setShowSignedIn(true);
+      setTimeout(() => setShowSignedIn(false), 2000);
+    }
+
+    prevUserId.current = userId;
+  }, [userId]);
 
   // Wrap the create invoice handler to show 'Creating Invoice'
   const handleCreateInvoice = async () => {
@@ -71,7 +101,6 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
       setCreatingInvoice(false);
     }
   };
-
   useEffect(() => {
     if (!userId) return;
     const q = query(
@@ -107,7 +136,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   };
 
   if (loading) {
-    // Show 3 skeleton cards for loading state
+    // Show skeletons only if loading and we expect invoices
     return (
       <div className="min-h-screen bg-dark p-6 relative">
         <div className="max-w-6xl mx-auto">
@@ -116,25 +145,29 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
               Your Invoices
             </h1>
             <button
-              className={
-                [
-                  "bg-gradient-to-r from-black via-[#494949] to-[#868686]",
-                  "hover:from-[#868686] hover:via-[#494949] hover:to-black",
-                  "transition-all duration-700 text-white py-3 px-6 rounded-xl flex items-center justify-center gap-3 text-lg mx-auto select-none",
-                  loading || creatingInvoice ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
-                ].join(" ")
-              }
-              disabled
+              className={[
+                "bg-gradient-to-r from-black via-[#494949] to-[#868686]",
+                "hover:from-[#868686] hover:via-[#494949] hover:to-black",
+                "transition-all duration-700 text-white py-3 px-6 rounded-xl flex items-center justify-center gap-3 text-lg  select-none",
+                creatingInvoice
+                  ? "opacity-60 cursor-not-allowed"
+                  : "cursor-pointer",
+              ].join(" ")}
+              onClick={creatingInvoice ? undefined : handleCreateInvoice}
+              disabled={creatingInvoice}
             >
               <Plus className="w-5 h-5" />
-              New Invoice
+              {creatingInvoice ? "Creating Invoice" : "New Invoice"}
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SkeletonSection />
-            <SkeletonSection />
-            <SkeletonSection />
-          </div>
+          {/* Only show skeletons if we don't know if user has invoices yet */}
+          {invoices.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <SkeletonSection />
+              <SkeletonSection />
+              <SkeletonSection />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -241,18 +274,31 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                     setPendingDeleteId(invoice.id);
                     setModalOpen(true);
                   }}
+                  disabled={pendingDeleteId === invoice.id && modalOpen}
                 >
-                  <div className="bg-[#1c1c1c] py-1 px-3 rounded-2xl hover:bg-red-500/20 transition-colors">
+                  <div className="bg-[#1c1c1c] py-1 px-3 rounded-2xl hover:bg-red-500/20 transition-colors flex items-center">
                     <MdDelete className="inline-block mr-1 text-lg align-middle" />
+                    {pendingDeleteId === invoice.id && modalOpen ? 'Deleting...' : ''}
                   </div>
                 </button>
                 <span>
-                  Last updated:{" "}
-                  {invoice.updatedAt?.toDate?.()?.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  }) || "N/A"}
+                  Last updated: {(() => {
+                    if (!invoice.updatedAt) return 'N/A';
+                    let date;
+                    if (typeof invoice.updatedAt.toDate === 'function') {
+                      date = invoice.updatedAt.toDate();
+                    } else if (invoice.updatedAt instanceof Date) {
+                      date = invoice.updatedAt;
+                    } else if (typeof invoice.updatedAt === 'string' || typeof invoice.updatedAt === 'number') {
+                      const d = new Date(invoice.updatedAt);
+                      if (!isNaN(d.getTime())) date = d;
+                    }
+                    return date ? date.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    }) : 'N/A';
+                  })()}
                 </span>
               </div>
             )}
@@ -302,7 +348,8 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
           </h1>
           <button
             onClick={handleCreateInvoice}
-            className="bg-[#0A0A0A] hover:bg-[#131313] border border-[#222222] text-white font-semibold py-3 px-6 rounded-2xl transition-colors duration-200 flex items-center gap-3 md:text-lg text-base"
+            className="bg-gradient-to-r from-black via-[#494949] to-[#868686]
+                hover:from-[#868686] hover:via-[#494949] hover:to-black text-white font-semibold py-3 gap-3 md:text-lg transition-all duration-700 px-6 rounded-xl flex items-center justify-center text-lg select-none"
             disabled={creatingInvoice}
           >
             <Plus className="w-5 h-5" />
@@ -312,10 +359,21 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
 
         {invoices.length === 0 ? emptyState : invoiceCards}
       </div>
+      {showSignedIn && (
+        <div className="fixed bottom-6 right-6 bg-green-800 text-white px-4 flex items-center gap-2 py-2 rounded-xl shadow-lg z-50 animate-fade-in">
+          <LogInIcon className="inline-block mr-1" />
+          Signed in successfully!
+        </div>
+      )}
       {showCopied && (
         <div className="fixed flex items-center gap-2 bottom-6 right-6 bg-[#dadada] text-[#000] px-4 py-2 rounded-xl shadow-lg z-50 animate-fade-in">
           <FaRegCopy />
           Text Copied!
+        </div>
+      )}
+      {showDeleted && (
+        <div className="fixed bottom-6 right-6 bg-[#131313] text-white px-4 py-2 rounded-xl shadow-lg z-50 animate-fade-in">
+          Invoice Deleted!
         </div>
       )}
     </div>

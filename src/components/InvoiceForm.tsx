@@ -224,17 +224,24 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
               {/* Last updated time */}
               <div>
-                {formData.updatedAt && (
-                  <div className="text-lg text-gray-400">
-                    Last updated:{" "}
-                    {new Date(formData.updatedAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </div>
-                )}
-              </div>
+  {formData.updatedAt && (
+    <div className="text-lg text-gray-400">
+      Last updated:{" "}
+      {formData.updatedAt.toDate
+        ? formData.updatedAt.toDate().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
+        : new Date(formData.updatedAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })}
+    </div>
+  )}
+</div>
+
             </div>
           </div>
 
