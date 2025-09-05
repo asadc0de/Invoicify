@@ -657,7 +657,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-lg font-semibold text-white mb-2">
+                <label className="block text-lg font-semibold text-white mb-2 outline-none">
                   Payment Status
                 </label>
                 <select
@@ -669,7 +669,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     }))
                   }
                   disabled={!canEdit}
-                  className="w-full bg-gray-800 text-white border border-[#222] rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50"
+                  className="w-full bg-gray-800 text-white border border-[#222] rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-[#333] disabled:opacity-50 outline-none"
                 >
                   <option value="pending">Pending</option>
                   <option value="paid">Paid</option>

@@ -80,7 +80,7 @@ export function useInvoice(invoiceId?: string) {
 }
 
 // Keep this simple hook for the InvoiceList component
-export const useUserInvoices = (userId: string) => {
+export const useUserInvoices = () => {
   // This is now handled directly in InvoiceList component
   return { invoices: [], loading: false };
 };

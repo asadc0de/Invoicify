@@ -44,7 +44,13 @@ const InvoiceTextView: React.FC = () => {
             <div>
               <span className="block text-lg font-semibold text-white mb-2">Invoice Date</span>
               <div className="flex items-center gap-2 text-gray-300 text-lg">
-                {invoice.startDate.toLocaleDateString()}
+                {invoice.startDate && (typeof invoice.startDate.toDate === 'function'
+                  ? invoice.startDate.toDate()?.toLocaleDateString()
+                  : (invoice.startDate instanceof Date
+                      ? invoice.startDate.toLocaleDateString()
+                      : (typeof invoice.startDate === 'string' || typeof invoice.startDate === 'number')
+                        ? new Date(invoice.startDate).toLocaleDateString()
+                        : null)) || 'N/A'}
               </div>
             </div>
             <div>
@@ -123,7 +129,7 @@ const InvoiceTextView: React.FC = () => {
         <div className="bg-gray-900 rounded-2xl p-6 shadow-xl border-[#333] border mb-6">
           <h2 className="text-2xl font-bold text-white mb-6">Features</h2>
           <div className="space-y-4">
-            {(invoice.features || []).map((feature, index) => (
+            {(invoice.features || []).map((feature: { id: React.Key | null | undefined; description: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: number) => (
               <div key={feature.id} className="bg-[#111] rounded-lg p-4 border border-[#222]">
                 <span className="block text-lg font-semibold text-white mb-2">Feature {index + 1}</span>
                 <div className="text-white opacity-80 font-normal text-lg">{feature.description}</div>
