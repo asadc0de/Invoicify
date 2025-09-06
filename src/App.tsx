@@ -1,10 +1,11 @@
-import React, { useCallback, Suspense } from 'react';
+import React, { useCallback, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { Auth } from './components/Auth';
 import { useAuth } from './hooks/useAuth';
 import { useInvoice } from './hooks/useInvoice';
 import InvoiceTextView from './components/InvoiceTextView';
 import { SkeletonSection } from './components/Skeleton';
+import Lenis from 'lenis'
 
 // Lazy load components for better performance
 const InvoiceForm = React.lazy(() => import('./components/InvoiceForm').then(module => ({ default: module.InvoiceForm })));
@@ -15,6 +16,9 @@ const LoadingSpinner = () => (
     <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"></div>
   </div>
 );
+
+
+  
 
 const InvoiceView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -75,6 +79,16 @@ const Dashboard: React.FC = () => {
 };
 
 function App() {
+
+  // Lenis Scroll
+useEffect(() => {
+  const lenis = new Lenis()
+  function raf(time: number){
+    lenis.raf(time)
+    requestAnimationFrame(raf)
+  }
+  requestAnimationFrame(raf)
+})
   const { loading } = useAuth();
 
   if (loading) {
