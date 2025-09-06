@@ -1,13 +1,63 @@
 import React, { useEffect, useState } from "react";
-import { Plus, FileText, Calendar, DollarSign, Copy, User } from "lucide-react";
+import { Plus, FileText, Calendar, DollarSign, Copy, User, Trash2 } from "lucide-react";
 import { db } from "../firebase";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { MdDelete } from "react-icons/md";
+import { FaCopy } from "react-icons/fa";
 
 interface InvoiceListProps {
   userId: string;
   onCreateInvoice: () => void;
   onSelectInvoice: (invoiceId: string) => void;
 }
+
+// ✅ Reusable Confirm Dialog
+const ConfirmDialog = ({
+  open,
+  title,
+  message,
+  onConfirm,
+  onCancel,
+  deleting,
+}: {
+  open: boolean;
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  deleting: boolean;
+}) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="bg-[#0A0A0A] border border-[#222] rounded-2xl p-6 w-[90%] max-w-md shadow-2xl">
+        <h2 className="text-xl font-semibold text-white mb-3">{title}</h2>
+        <p className="text-gray-400 mb-6">{message}</p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            disabled={deleting}
+            className="px-4 py-2 rounded-2xl bg-gray-800 border border-[#222] hover:bg-gray-700 text-gray-300 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={deleting}
+            className={`px-4 py-2 rounded-2xl ${
+              deleting
+                ? "bg-red-800 text-gray-300 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-500 text-white"
+            }`}
+          >
+            {deleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const InvoiceList: React.FC<InvoiceListProps> = ({
   userId,
@@ -18,15 +68,20 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const [loading, setLoading] = useState(true);
   const [showCopied, setShowCopied] = useState(false);
 
+  // 👇 State for dialog + deletion
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
   useEffect(() => {
     if (!userId) return;
-    
+
     const q = query(collection(db, "invoices"), where("createdBy", "==", userId));
     const unsub = onSnapshot(q, (snapshot) => {
       setInvoices(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       setLoading(false);
     });
-    
+
     return () => unsub();
   }, [userId]);
 
@@ -36,6 +91,27 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
 
   const handleInvoiceClick = (invoiceId: string) => {
     onSelectInvoice(invoiceId);
+  };
+
+  const requestDeleteInvoice = (invoiceId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedInvoiceId(invoiceId);
+    setDialogOpen(true);
+  };
+
+  const confirmDeleteInvoice = async () => {
+    if (!selectedInvoiceId) return;
+    try {
+      setDeleting(true); // start deleting
+      await deleteDoc(doc(db, "invoices", selectedInvoiceId));
+      setInvoices((prev) => prev.filter((inv) => inv.id !== selectedInvoiceId));
+    } catch (err) {
+      console.error("Error deleting invoice:", err);
+    } finally {
+      setDeleting(false); // reset
+      setDialogOpen(false);
+      setSelectedInvoiceId(null);
+    }
   };
 
   if (loading) {
@@ -67,8 +143,17 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
         <div
           key={invoice.id}
           onClick={() => invoice.id && handleInvoiceClick(invoice.id)}
-          className="bg-[#0A0A0A] hover:bg-[#131313] rounded-xl p-6 shadow-xl cursor-pointer transition-colors duration-200 border border-[#222]"
+          className="relative bg-[#0A0A0A] hover:bg-[#131313] rounded-xl p-6 shadow-xl cursor-pointer transition-colors duration-200 border border-[#222]"
         >
+          {/* Delete button */}
+          <button
+            onClick={(e) => requestDeleteInvoice(invoice.id, e)}
+            className="absolute bottom-4 left-4 flex items-center gap-1 text-gray-500 hover:text-red-400 text-sm px-4 py-2 rounded-2xl hover:bg-red-900/20 transition bg-[#212121]"
+          >
+            <MdDelete className="w-4 h-4" />
+            
+          </button>
+
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-xl font-semibold text-white truncate">
               {invoice.projectTitle || "Untitled Project"}
@@ -87,7 +172,9 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
           <div className="space-y-3 text-gray-400">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span>Created: {invoice.createdAt?.toDate?.()?.toLocaleDateString() || "N/A"}</span>
+              <span>
+                Created: {invoice.createdAt?.toDate?.()?.toLocaleDateString() || "N/A"}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
@@ -162,11 +249,22 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
 
         {invoices.length === 0 ? emptyState : invoiceCards}
       </div>
+
       {showCopied && (
-        <div className="fixed bottom-6 right-6 bg-[#131313] text-white px-4 py-2 rounded-xl shadow-lg z-50 animate-fade-in">
-          Text Copied!
+        <div className="fixed flex items-center gap-3 bottom-6 right-6 bg-[#dadada] text-black px-4 py-2 rounded-xl shadow-lg z-50 animate-fade-in">
+        <FaCopy />  Text Copied!
         </div>
       )}
+
+      {/* ✅ Confirmation Dialog */}
+      <ConfirmDialog
+        open={dialogOpen}
+        title="Delete Invoice"
+        message="Are you sure you want to delete this invoice? This action cannot be undone."
+        onConfirm={confirmDeleteInvoice}
+        onCancel={() => setDialogOpen(false)}
+        deleting={deleting}
+      />
     </div>
   );
 };
