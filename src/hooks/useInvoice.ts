@@ -44,7 +44,6 @@ export function useInvoice(invoiceId?: string) {
       createdBy: userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      startDate: serverTimestamp(),
       projectTitle: "",
       websitePages: 0,
       features: [],
@@ -81,7 +80,7 @@ export function useInvoice(invoiceId?: string) {
 }
 
 // Keep this simple hook for the InvoiceList component
-export const useUserInvoices = () => {
+export const useUserInvoices = (userId: string) => {
   // This is now handled directly in InvoiceList component
   return { invoices: [], loading: false };
 };
