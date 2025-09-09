@@ -155,7 +155,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
           </button>
 
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-xl font-semibold text-white truncate">
+            <h3 className="text-xl font-semibold text-white truncate capitalize">
               {invoice.projectTitle || "Untitled Project"}
             </h3>
             <span
