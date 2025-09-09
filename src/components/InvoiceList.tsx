@@ -211,7 +211,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                 <Copy className="w-4 h-4 text-blue-400" />
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 capitalize">
               <User className="w-4 h-4" />
               <span>Client: {invoice.clientName || "Not specified"}</span>
             </div>
