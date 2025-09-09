@@ -563,7 +563,9 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                       className="bg-gray-800 rounded-lg p-3 flex justify-between items-center"
                     >
                       <span className="text-gray-300 text-lg">
-                        {snapshot.timestamp.toLocaleString()}
+                        {snapshot.timestamp?.toDate
+                          ? snapshot.timestamp.toDate().toLocaleString()
+                          : new Date(snapshot.timestamp).toLocaleString()}
                       </span>
                       <span className="text-yellow-400 font-semibold">
                         Used: {snapshot.usedRevisions}

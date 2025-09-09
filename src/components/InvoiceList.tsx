@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, FileText, Calendar, DollarSign, Copy, User, Trash2 } from "lucide-react";
+import { Plus, FileText, Calendar, DollarSign, Copy, User } from "lucide-react";
 import { db } from "../firebase";
 import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { MdDelete } from "react-icons/md";
