@@ -56,6 +56,15 @@ const InvoiceTextView: React.FC = () => {
                         const d = new Date(invoice.startDate);
                         if (!isNaN(d.getTime())) date = d;
                       }
+                    } else if (invoice.createdAt) {
+                      if (typeof invoice.createdAt.toDate === 'function') {
+                        date = invoice.createdAt.toDate();
+                      } else if (invoice.createdAt instanceof Date) {
+                        date = invoice.createdAt;
+                      } else if (typeof invoice.createdAt === 'string' || typeof invoice.createdAt === 'number') {
+                        const d = new Date(invoice.createdAt);
+                        if (!isNaN(d.getTime())) date = d;
+                      }
                     }
                     return date ? date.toLocaleDateString() : 'N/A';
                   })()

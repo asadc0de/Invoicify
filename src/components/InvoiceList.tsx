@@ -173,7 +173,21 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               <span>
-                Created: {invoice.createdAt?.toDate?.()?.toLocaleDateString() || "N/A"}
+                Created: {
+                  (() => {
+                    if (!invoice.createdAt) return "N/A";
+                    let date: Date | undefined = undefined;
+                    if (typeof invoice.createdAt.toDate === 'function') {
+                      date = invoice.createdAt.toDate();
+                    } else if (invoice.createdAt instanceof Date) {
+                      date = invoice.createdAt;
+                    } else if (typeof invoice.createdAt === 'string' || typeof invoice.createdAt === 'number') {
+                      const d = new Date(invoice.createdAt);
+                      if (!isNaN(d.getTime())) date = d;
+                    }
+                    return date ? date.toLocaleDateString() : 'N/A';
+                  })()
+                }
               </span>
             </div>
             <div className="flex items-center gap-2">
